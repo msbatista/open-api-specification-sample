@@ -246,6 +246,9 @@ definitions:
       documentWithPhotoFrontAndBackImage:
         type: string
         description: "A base64 image representing the front and back side of the partner identity card"
+      proofOfResidency:
+        type: string
+        description: "A base64 image representing an proof of residency"
   GoogleOAuthSignIn:
     properties:
       tokenId:
