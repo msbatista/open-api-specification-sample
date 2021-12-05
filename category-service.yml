@@ -135,7 +135,7 @@ paths:
     delete:
       tags:
         - "categories"
-      summary: "Get an category by id"
+      summary: "Delete an category by id"
       description: ""
       operationId: "getCategoryById"
       produces: 
