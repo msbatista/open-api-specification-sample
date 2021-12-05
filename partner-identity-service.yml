@@ -39,7 +39,7 @@ paths:
           schema:
             $ref: "#/definitions/Partner"
       responses:
-        "200":
+        "201":
           description: "The request was accepted successfully and it is queue for internal analysis"
           schema:
             $ref: "#/definitions/ApiResponse"
