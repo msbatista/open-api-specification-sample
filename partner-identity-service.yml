@@ -20,7 +20,7 @@ tags:
 schemes:
   - "https"
 paths:
-  /partners:
+  /partner:
     post:
       tags:
         - "partners"
@@ -39,18 +39,85 @@ paths:
           schema:
             $ref: "#/definitions/PartnerModel"
       responses:
-        "202":
+        "200":
           description: "The request was accepted successfully and it is queue for internal analysis"
+          schema:
+            $ref: "#/definitions/ApiResponse"
         "400":
           description: "PartnerModel is invalid"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
         "401":
           description: "The request was not authenticated"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
         "403":
           description: "The requester was not authorized to perform this operation"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
       security:
         - identity_auth:
             - "write:partner"
             - "read:partner"
+  /partner/{partnerId}:
+    get:
+      tags:
+        - "partners"
+      summary: "Get partner by id"
+      description: ""
+      operationId: "getPartnerById"
+      produces: 
+      - "application/json"
+      parameters:
+      - name: partnerId
+        in: path
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/PartnerModel"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Partner not found"
+      security:
+      - api_key: []
+  /partner/documentType/{documentType}/value/{documentValue}:
+    get:
+      tags:
+        - "partners"
+      summary: "Get partner by document"
+      description: ""
+      operationId: "getPartnerByDocument"
+      produces: 
+      - "application/json"
+      parameters:
+      - name: documentType
+        in: path
+        required: true
+        type: "string"
+        enum:
+          - "rg"
+          - "cpf"
+      - name: documentValue
+        in: path
+        required: true
+        type: "string"
+        example: "674.397.470-62"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/PartnerModel"
+        "400":
+          description: "Invalid Document supplied supplied"
+        "404":
+          description: "Partner not found"
+      security:
+      - api_key: []
 securityDefinitions:
   identity_auth:
     type: "oauth2"
@@ -81,6 +148,14 @@ definitions:
           $ref: "#/definitions/CategoryModel"
       bankingAccount:
         $ref: "#/definitions/BankingAccountModel"
+      telephones:
+        type: array
+        items:
+          $ref: "#/definitions/TelephoneModel"
+      addresses:
+        type: array
+        items:
+          $ref: "#/definitions/AddressModel"
   DocumentModel:
     type: "object"
     properties:
@@ -127,6 +202,83 @@ definitions:
       price:
         type: number
         description: "The price of the service"
+  TelephoneModel:
+    type: object
+    properties:
+      type: 
+        type: string
+        enum: 
+          - "cellphone"
+      number:
+        type: number
+        description: "The phone number with area code"
+      codeCountry:
+        type: string
+        enum:
+          - "55"
+  AddressModel:
+    type: object
+    properties:
+      zipCode:
+        type: string
+        description: "Zip code of the address or city"
+      address:
+        type: string
+        description: "The address"
+      number:
+        type: string
+        description: "The number of the building"
+      complement:
+        type: string
+        description: "Point of reference, apartment number etc."
+      type: 
+        type: string
+        enum: 
+          - "street"
+          - "avenue"
+          - "condominium"
+          - "village"
+          - "square"
+  LocationModel:
+    type: object
+    properties:
+      city: 
+        type: string
+        description: "City where the partner lives"
+      state:
+        type: string
+        enum: 
+          - "AC"
+          - "AL"
+          - "AP"
+          - "AM"
+          - "BA"
+          - "CE"
+          - "DF"
+          - "ES"
+          - "GO"
+          - "MA"
+          - "MT"
+          - "MS"
+          - "MG"
+          - "PA"
+          - "PB"
+          - "PR"
+          - "PE"
+          - "PI"
+          - "RJ"
+          - "RN"
+          - "RS"
+          - "RO"
+          - "RR"
+          - "SC"
+          - "SP"
+          - "SE"
+          - "TO" 
+      country:
+        type: string
+        enum:
+          - "BR"
   BankingAccountModel:
     type: object
     properties:
@@ -152,5 +304,26 @@ definitions:
           - "633"
           - "652"
           - "745"
-
-
+  ApiResponse:
+    type: object
+    properties:
+      code: 
+        type: integer
+        format: int32
+      type:
+        type: string
+      message: 
+        type: string
+      partner_id:
+        type: integer
+        format: int64
+  ApiResponseError:
+    type: object
+    properties:
+      code: 
+        type: integer
+        format: int32
+      type:
+        type: string
+      message: 
+        type: string
