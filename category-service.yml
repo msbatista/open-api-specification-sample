@@ -1,0 +1,214 @@
+swagger: "2.0"
+info:
+  description: "Provide CRUD operations to Easy Home Services Platform"
+  version: "1.0.0"
+  title: "Category API for the Easy Home Services"
+  termsOfService: "https://easyhome.io/terms"
+  contact:
+    email: "easyhome@easyhome.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "api.categories.easyhome"
+basePath: "/v1"
+tags:
+  - name: "categories"
+    description: "Categories management"
+    externalDocs:
+      description: "Find out more"
+      url: "https://easyhomeservices.io/"
+schemes:
+  - "https"
+paths:
+  /category:
+    post:
+      tags:
+        - "categories"
+      description: ""
+      operationId: "addCategory"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      summary: "Create a category"
+      parameters:
+      - name: "body"
+        in: body
+        schema:
+          $ref: "#/definitions/Category"
+        required: true
+        description: "An object containing the name and code of the category"
+      responses:
+        "201":
+          description: "The request was successfully processed"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        "400":
+          description: "Category is invalid"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
+        "409":
+          description: "There exists already a category with the code or name in the database"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
+        "401":
+          description: "The request was not authenticated"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
+        "403":
+          description: "The requester was not authorized to perform this operation"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
+      security:
+      - identity_auth:
+        - "write:category"
+        - "read:category"
+    put:
+      tags:
+        - "categories"
+      description: ""
+      operationId: "updateCategory"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      summary: "Update an existing category"
+      parameters:
+      - name: "body"
+        in: body
+        schema:
+          $ref: "#/definitions/Category"
+        required: true
+        description: "An object containing the name and code of the category"
+      responses:
+        "201":
+          description: "The request was successfully processed"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        "400":
+          description: "Category is invalid"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
+        "409":
+          description: "There exists already a category with the code or name in the database"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
+        "401":
+          description: "The request was not authenticated"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
+        "403":
+          description: "The requester was not authorized to perform this operation"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
+      security:
+      - identity_auth:
+        - "write:category"
+        - "read:category"
+  /category/{categoryId}:
+    get:
+      tags:
+        - "categories"
+      summary: "Get an category by id"
+      description: ""
+      operationId: "getCategoryById"
+      produces: 
+      - "application/json"
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Category"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "category not found"
+      security:
+      - identity_auth:
+        - "read:category"
+    delete:
+      tags:
+        - "categories"
+      summary: "Get an category by id"
+      description: ""
+      operationId: "getCategoryById"
+      produces: 
+      - "application/json"
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "204":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Category"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "category not found"
+      security:
+      - identity_auth:
+        - "write:category"
+        - "read:category"
+
+securityDefinitions:
+  identity_auth:
+    type: "oauth2"
+    authorizationUrl: "http://api.easyhome.io/oauth/"
+    flow: "implicit"
+    scopes:
+      write:category: "modify/create category object"
+      read:category: "read from category database"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  Category:
+    type: object
+    properties:
+      name:
+        type: string
+        description: "Name for the new category, must be unique."
+        example: "House Keeping"
+      code:
+        type: string
+        description: "Code for the new category, must be unique."
+        example: "house_keeping"
+      description:
+        type: string
+        description: "Brief description for the category"
+        maxLength: 255
+    required: ["name", "code", "description"]
+  ApiResponse:
+    type: object
+    properties:
+      code: 
+        type: integer
+        format: int32
+      type:
+        type: string
+      message: 
+        type: string
+      category_id:
+        type: integer
+        format: int64
+  ApiResponseError:
+    type: object
+    properties:
+      code: 
+        type: integer
+        format: int32
+      type:
+        type: string
+      message: 
+        type: string
