@@ -127,7 +127,7 @@ definitions:
       price:
         type: number
         description: "The price of the service"
-  BankingAccount:
+  BankingAccountModel:
     type: object
     properties:
       agencyNumber:
