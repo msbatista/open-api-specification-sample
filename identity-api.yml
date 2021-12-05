@@ -4,21 +4,21 @@ info:
   version: "1.0.0"
   title: "Ideia Original Identity Platform"
   termsOfService: "https://ideiaoriginal.io/terms"
-  contact: 
+  contact:
     email: "silvabatistamarcelo@gmail.com"
-  license: 
+  license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 host: "ideia-original-identity-api.ideiaoriginal.io"
 basePath: "/v1"
 tags:
-- name: "partners"
-  description: "Partners management"
-  externalDocs:
-    description: "Find out more"
-    url: "https://ideiaoriginal.io/"
+  - name: "partners"
+    description: "Partners management"
+    externalDocs:
+      description: "Find out more"
+      url: "https://ideiaoriginal.io/"
 schemes:
-- "https"
+  - "https"
 paths:
   /partners:
     post:
@@ -32,12 +32,12 @@ paths:
       produces:
         - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "An object representing a partner to be added to the platform"
-        required: true
-        schema:
-          $ref: "#/definitions/PartnerModel"
+        - in: "body"
+          name: "body"
+          description: "An object representing a partner to be added to the platform"
+          required: true
+          schema:
+            $ref: "#/definitions/PartnerModel"
       responses:
         "202":
           description: "The request was accepted successfully and it is queue for internal analysis"
@@ -48,9 +48,9 @@ paths:
         "403":
           description: "The requester was not authorized to perform this operation"
       security:
-      - identity_auth:
-        - "write:partner"
-        - "read:partner"
+        - identity_auth:
+            - "write:partner"
+            - "read:partner"
 securityDefinitions:
   identity_auth:
     type: "oauth2"
@@ -75,6 +75,12 @@ definitions:
       email:
         type: string
         example: "john.doe@gmail.com"
+      categories:
+        type: array
+        items:
+          $ref: "#/definitions/CategoryModel"
+      bankingAccount:
+        $ref: "#/definitions/BankingAccountModel"
   DocumentModel:
     type: "object"
     properties:
@@ -97,10 +103,10 @@ definitions:
         description: "A base64 image representing the front and back side of the partner identity card"
   GoogleOAuthSignInModel:
     properties:
-      tokenId: 
+      tokenId:
         type: string
         description: "Id token representing an valid google user profile"
-      name: 
+      name:
         type: string
         description: "Google profile name"
       email:
@@ -109,3 +115,42 @@ definitions:
       profileImageUrl:
         type: string
         description: "Google profile image url"
+  CategoryModel:
+    type: object
+    properties:
+      category:
+        type: string
+        enum:
+          - "cleaning"
+          - "housekeeping"
+        description: "Available categories"
+      price:
+        type: number
+        description: "The price of the service"
+  BankingAccount:
+    type: object
+    properties:
+      agencyNumber:
+        type: string
+        description: "Bank account agency number with digit"
+      accountNumber:
+        type: string
+        description: "Bank account number with digit"
+      agency:
+        type: string
+        enum:
+          - "001"
+          - "033"
+          - "104"
+          - "237"
+          - "341"
+          - "356"
+          - "389"
+          - "399"
+          - "422"
+          - "453"
+          - "633"
+          - "652"
+          - "745"
+
+
