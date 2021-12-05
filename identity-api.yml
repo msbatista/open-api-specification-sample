@@ -1,0 +1,111 @@
+swagger: "2.0"
+info:
+  description: "This API is responsible to manager platform service providers partners. It provides an easy way to verify partners identity."
+  version: "1.0.0"
+  title: "Ideia Original Identity Platform"
+  termsOfService: "https://ideiaoriginal.io/terms"
+  contact: 
+    email: "silvabatistamarcelo@gmail.com"
+  license: 
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "ideia-original-identity-api.ideiaoriginal.io"
+basePath: "/v1"
+tags:
+- name: "partners"
+  description: "Partners management"
+  externalDocs:
+    description: "Find out more"
+    url: "https://ideiaoriginal.io/"
+schemes:
+- "https"
+paths:
+  /partners:
+    post:
+      tags:
+        - "partners"
+      summary: "Integrate a new partner to the platform"
+      description: ""
+      operationId: "addPartner"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "An object representing a partner to be added to the platform"
+        required: true
+        schema:
+          $ref: "#/definitions/PartnerModel"
+      responses:
+        "202":
+          description: "The request was accepted successfully and it is queue for internal analysis"
+        "400":
+          description: "PartnerModel is invalid"
+        "401":
+          description: "The request was not authenticated"
+        "403":
+          description: "The requester was not authorized to perform this operation"
+      security:
+      - identity_auth:
+        - "write:partner"
+        - "read:partner"
+securityDefinitions:
+  identity_auth:
+    type: "oauth2"
+    authorizationUrl: "http://ideiaoriginal.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:partner: "modify/create partners object"
+      read:partner: "read from partners database"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  PartnerModel:
+    type: "object"
+    properties:
+      document:
+        $ref: "#/definitions/DocumentModel"
+      name:
+        type: string
+        example: "John Doe"
+      email:
+        type: string
+        example: "john.doe@gmail.com"
+  DocumentModel:
+    type: "object"
+    properties:
+      type:
+        description: "Document type that user can use during the registry stage"
+        type: "string"
+        enum:
+          - "cpf"
+          - "rg"
+        example: "cpf"
+      value:
+        description: "Document value"
+        type: "string"
+        example: "674.397.470-62"
+      selfieWithDocument:
+        type: string
+        description: "A base64 image representing an selfie of the partner with an valid document with an photo"
+      documentWithPhotoFrontAndBackImage:
+        type: string
+        description: "A base64 image representing the front and back side of the partner identity card"
+  GoogleOAuthSignInModel:
+    properties:
+      tokenId: 
+        type: string
+        description: "Id token representing an valid google user profile"
+      name: 
+        type: string
+        description: "Google profile name"
+      email:
+        type: string
+        description: "Google email address"
+      profileImageUrl:
+        type: string
+        description: "Google profile image url"
