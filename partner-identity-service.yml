@@ -59,44 +59,6 @@ paths:
         - identity_auth:
             - "write:partner"
             - "read:partner"
-    put:
-      tags:
-        - "partners"
-      summary: "Update an existing partner"
-      description: ""
-      operationId: "updatePartner"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "An object representing a partner to be added to the platform"
-          required: true
-          schema:
-            $ref: "#/definitions/Partner"
-      responses:
-        "204":
-          description: "The request was accepted successfully"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-        "400":
-          description: "Partner is invalid"
-          schema:
-            $ref: "#/definitions/ApiResponseError"
-        "401":
-          description: "The request was not authenticated"
-          schema:
-            $ref: "#/definitions/ApiResponseError"
-        "403":
-          description: "The requester was not authorized to perform this operation"
-          schema:
-            $ref: "#/definitions/ApiResponseError"
-      security:
-        - identity_auth:
-            - "write:partner"
-            - "read:partner"
   /partner/{partnerId}:
     get:
       tags:
@@ -123,6 +85,49 @@ paths:
           description: "Partner not found"
       security:
         - identity_auth:
+            - "read:partner"
+    put:
+      tags:
+        - "partners"
+      summary: "Update an existing partner"
+      description: ""
+      operationId: "updatePartner"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "An object representing a partner to be added to the platform"
+          required: true
+          schema:
+            $ref: "#/definitions/Partner"
+        - in: path
+          name: partnerId
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        "204":
+          description: "The request was accepted successfully"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        "400":
+          description: "Partner is invalid"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
+        "401":
+          description: "The request was not authenticated"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
+        "403":
+          description: "The requester was not authorized to perform this operation"
+          schema:
+            $ref: "#/definitions/ApiResponseError"
+      security:
+        - identity_auth:
+            - "write:partner"
             - "read:partner"
     delete:
       tags:
